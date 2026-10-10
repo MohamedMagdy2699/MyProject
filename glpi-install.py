@@ -19,7 +19,11 @@ def run_command(command):
     if result.returncode !=0:
        print ("command error")
        exit(1)
-
+def install_dependencies():
+    print ("Installing dependencies...")
+    run_command(["sudo", "apt-get", "update"])
+    run_command(["sudo", "apt-get", "install", "-y", "wget", "python3", "python3-pip"])
+    print ("Dependencies installed successfully")
 def download_agent():
      if os.path.exists(destination):
         print ("File already exists")
@@ -33,7 +37,10 @@ def download_agent():
 def install_agent():
     print ("Installing agent...")
     run_command(["sudo", "chmod", "+x", destination])
-    run_command(["sudo", destination])
+    result = subprocess.run(["sudo", destination],
+                            input=(f"{glpi_server}\n"),
+                            text=True
+                             )
 def configuring_agent():
     print ("Configuring the agent...")
     config_file = "/etc/glpi-agent/agent.cfg"
@@ -44,6 +51,7 @@ def configuring_agent():
 print ("========================================")
 print ("     GLPI Agent Automation              ")
 print ("========================================")
+install_dependencies()
 download_agent()
 install_agent()
 configuring_agent()
