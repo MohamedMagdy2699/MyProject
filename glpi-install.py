@@ -24,6 +24,12 @@ def install_dependencies():
     run_command(["sudo", "apt-get", "update"])
     run_command(["sudo", "apt-get", "install", "-y", "wget", "python3", "python3-pip"])
     print ("Dependencies installed successfully")
+def create_directory():
+    if not os.path.exists(agent_directory):
+        os.makedirs(agent_directory)
+        print ("Directory created successfully")
+    else:
+        print ("Directory already exists")
 def download_agent():
      if os.path.exists(destination):
         print ("File already exists")
@@ -52,6 +58,7 @@ print ("========================================")
 print ("     GLPI Agent Automation              ")
 print ("========================================")
 install_dependencies()
+create_directory()
 download_agent()
 install_agent()
 configuring_agent()
