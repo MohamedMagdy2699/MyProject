@@ -36,7 +36,7 @@ def download_agent():
      else:
          print ("Downloading Agent....")
          subprocess.run(
-         ["sudo", "wget", "-p", agent_directory, agent_url]
+         ["sudo", "wget", "-P", agent_directory, agent_url]
          )
          print ("GLPI agent downloaded successfully")
 
