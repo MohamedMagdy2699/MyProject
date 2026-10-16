@@ -6,8 +6,7 @@ import subprocess
 def run_program(program):
     result = subprocess.run([sys.executable, program])
     if result.returncode != 0:
-        print(f"Error occurred while running {program}.")
-        sys.exit(1)
+        raise RuntimeError(f"Error occurred while running {program}.")
 
 
 def main_menu():
@@ -21,7 +20,7 @@ def main_menu():
         print("4. run all at once")
         print("5. Exit")
         print("=" * 35)
-        choice = input("chose the required option: 1-5").strip()
+        choice = input("chose the required option: 1-5:  ").strip()
         if choice == "1":
             run_program("glpi-install.py")
         elif choice == "2":
@@ -30,8 +29,12 @@ def main_menu():
             run_program("wps-install.py")
         elif choice == "4":
             run_program("glpi-install.py")
-            run_program("useradd.py")
-            run_program("wps-install")
+            run_program("wps-install.py")
+            choice = input("Do you want to add a user? (y/n): ").strip().lower()
+            if choice == "y":
+               run_program("useradd.py")
+            else:
+                print("User addition skipped.")
         elif choice == "5":
             print("Exiting the program.")
             sys.exit(0)
@@ -39,4 +42,8 @@ def main_menu():
             print("Invalid choice. Please select a valid option (1-4).")
 
 if __name__ == "__main__":
-    main_menu()
+    try:
+        main_menu()
+    except (subprocess.CalledProcessError, FileNotFoundError, RuntimeError) as error:
+        print(f"An error occurred: {error}")
+        sys.exit(1)
