@@ -4,6 +4,7 @@
 import urllib.request
 import os
 import subprocess
+
 #Variables you can change
 agent_url="https://github.com/glpi-project/glpi-agent/releases/download/1.21/glpi-agent-1.21-with-snap-linux-installer.pl"
 agent_directory="/tmp/glpi-agent"
@@ -17,13 +18,23 @@ destination = os.path.join(agent_directory, filename)
 def run_command(command):
     result = subprocess.run(command, text=True)
     if result.returncode !=0:
-       print ("command error")
-       exit(1)
+       print (f"error when running command : {command}")
+    return result
+
 def install_dependencies():
-    print ("Installing dependencies...")
+   
+    print ("\n ==========Installing dependencies...============")
     run_command(["sudo", "apt-get", "update"])
-    run_command(["sudo", "apt-get", "install", "-y", "wget", "python3", "python3-pip"])
-    print ("Dependencies installed successfully")
+
+    if run_command(["sudo", "wget", "--version"]).returncode != 0:  
+       run_command(["sudo", "apt-get", "install", "-y", "wget"])
+       print ("\n =========wget installed successfully ====")
+    else: print ("wget already installed")
+    
+    if run_command(["sudo", "python3", "--version"]).returncode != 0:
+        run_command(["sudo", "apt", "install", "python3"])
+    else: print("python3 already installed")
+
 def create_directory():
     if not os.path.exists(agent_directory):
         os.makedirs(agent_directory)
@@ -41,21 +52,30 @@ def download_agent():
          print ("GLPI agent downloaded successfully")
 
 def install_agent():
-    print ("Installing agent...")
-    run_command(["sudo", "chmod", "+x", destination])
-    result = subprocess.run(["sudo", destination],
+    if run_command(["sudo", "glpi-agent", "--version"]).returncode !=0:
+       print ("Installing agent...")
+       run_command(["sudo", "chmod", "+x", destination])
+       result = subprocess.run(["sudo", destination],
                             input=(f"{glpi_server}\n"),
                             text=True
                              )
+    else: print("glpi-agent already installed")
+
 def configuring_agent():
-    print ("Configuring the agent...")
     config_file = "/etc/glpi-agent/agent.cfg"
-    with open(config_file, "a") as file:
-         file.write(f"\nserver = {glpi_server}\n")
-    print ("Agent configured successfully")
+    print ("Configuring the agent...")
+    with open(config_file, "r") as file:
+        content = file.read()
+        if glpi_server in content :
+           print ("glpi_server already esists")
+        else:
+            with open(config_file, "a") as file:
+                 file.write(f"\nserver = {glpi_server}\n")
+            print ("Agent configured successfully")
+
 #Run Script
 print ("========================================")
-print ("     GLPI Agent Automation              ")
+print ("     GLPI Agent installation             ")
 print ("========================================")
 install_dependencies()
 create_directory()

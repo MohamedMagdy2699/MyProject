@@ -17,18 +17,22 @@ def main_menu():
         print("=" * 35)
         print("1. Install GLPI")
         print("2. Add User")
-        print("3. Install GLPI and Add User")
-        print("4. Exit")
+        print("3. install WPS")
+        print("4. run all at once")
+        print("5. Exit")
         print("=" * 35)
-        choice = input("chosed the reuired option: 1-4").strip()
+        choice = input("chose the required option: 1-5").strip()
         if choice == "1":
             run_program("glpi-install.py")
         elif choice == "2":
             run_program("useradd.py")
         elif choice == "3":
+            run_program("wps-install.py")
+        elif choice == "4":
             run_program("glpi-install.py")
             run_program("useradd.py")
-        elif choice == "4":
+            run_program("wps-install")
+        elif choice == "5":
             print("Exiting the program.")
             sys.exit(0)
         else:
