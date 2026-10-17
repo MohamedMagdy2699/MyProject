@@ -17,8 +17,9 @@ def main_menu():
         print("1. Install GLPI")
         print("2. Add User")
         print("3. install WPS")
-        print("4. run all at once")
-        print("5. Exit")
+        print("4. Install Rustdesk")
+        print("5. run all at once")
+        print("6. Exit")
         print("=" * 35)
         choice = input("chose the required option: 1-5:  ").strip()
         if choice == "1":
@@ -28,14 +29,17 @@ def main_menu():
         elif choice == "3":
             run_program("wps-install.py")
         elif choice == "4":
+            run_program("rustdesk.py")
+        elif choice == "5":
             run_program("glpi-install.py")
             run_program("wps-install.py")
+            run_program("rustdesk.py")
             choice = input("Do you want to add a user? (y/n): ").strip().lower()
             if choice == "y":
                run_program("useradd.py")
             else:
                 print("User addition skipped.")
-        elif choice == "5":
+        elif choice == "6":
             print("Exiting the program.")
             sys.exit(0)
         else:
